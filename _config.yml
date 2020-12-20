@@ -4,7 +4,7 @@
 
 # Site
 title: 블로그 맛뵈기중...
-subtitle: ""
+subtitle: just a little bit
 description: ""
 keywords:
 author: ChangSun Park
@@ -105,4 +105,4 @@ theme: landscape
 deploy:
   type: git
   repo: https://github.com/ParkChangSun/ParkChangSun.github.io.git
-  branch: master
+  branch: gh-pages

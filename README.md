@@ -1,16 +1,38 @@
-# ParkChangSun.github.io
+# sv
 
-Welcome to my personal blog!
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## About Me
-- Software engineer passionate about web development and open source.
-- Interested in sharing knowledge and learning new technologies.
+## Creating a project
 
-## Blog
-Find my latest posts and projects at [https://parkchangsun.github.io](https://parkchangsun.github.io).
+If you're seeing this, you've probably already done this step. Congrats!
 
-## Contact
-- Email: parkchangsun@example.com
-- GitHub: [ParkChangSun](https://github.com/ParkChangSun)
+```sh
+# create a new project in the current directory
+npx sv create
 
-Thanks for visiting!
+# create a new project in my-app
+npx sv create my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```sh
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```sh
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

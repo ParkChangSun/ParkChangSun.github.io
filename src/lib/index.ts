@@ -1,1 +1,3 @@
-// place files you want to import through the `$lib` alias in this folder.
+export async function getPosts() {
+    return [{ title: 'Hello World', content: 'This is my first post!' }];
+}

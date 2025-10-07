@@ -1,20 +1,138 @@
-# 백준 10
+# 백준 10217 - KCM Travel
 
-구해야 하는 것 n번째 도시에서의 최소 시간
-그래프 상의 시작 노드에서 도착 노드까지의 최소 거리 - 다익스트라 사용
-변수는 비용 시간
-어떤 노드에 도달하는 경로들은 각각 다른 비용과 시간을 가진다. 다익스트라 중간 계산 결과는 비용과 시간의 2차원 공간에 저장해야 한다.
+https://www.acmicpc.net/problem/10217
 
-n번째 도시까지 가는 데 비용 m 을 사용했을 때 최소 시간-  T
+## 입력
 
-a-b 인 엣지는 비용과 시간값을 가진다.
+- 노드 수 N
+- 최대 비용 M
+- `Edge{ u, v, cost c, duration d int }`
 
-T값을 계산하려면 기존의 T값과 새로 계산한 값(지금 잡고 있는 다익스트라 아이템의 정보 중 현재 위치에서 다음 위치까지 갈 수 있는 엣지의 시간을 더한 값) 중 작은 값을 저장해야 한다.
+## 문제
 
-만약 현재 경로보다 비용도 낮고 시간도 더 적은 상황이 있다면 어떨까? 이 돈 주고 지루하게 가느니 더 싸고 빠른 경로를 택하지 않을까? 
+비용과 시간 weight 값을 가지는 Directed Graph에서 비용 M 이하인 경로들의 최소 소요 시간
 
-이걸 계산하기 위해 처음에는 현재 비용보다 낮은 것들 중 제일 작은 값을 선택할까 했는데 이건 안 된다. 어던 지점에서는 비용이 높지만 시간이 낮은 경우도 있다. 비싼 로켓을 탄 것이다.
+## 풀이
+
+어떤 노드 n까지 가는데 m의 비용을 들고 시작한다면 m이 커질수록 더 빠르게 가는 경로를 기대한다. 따라서 n,m 2차원으로 저장해야 한다.
+
+다익스트라 큐에 넣는 정보는 `State{ n, m, time d int }`
+
+DP[n][m] 보다 d가 크면 이 상태 경로는 버리면 된다.
+
+점화식
+
+큐에 들어 있는 상태 S에서 S.u를 출발 노드로 하는 엣지들에 대해
+
+$DP(E.v,S.m+E.c) = min(DP(E.v,S.m+E.c), DP(E.u,S.m) + E.d)$
+
+비효율적인 경로들을 전부 계산하면 TLE다. 만약 현재 경로보다 비싸고 더 느린 비효율적인 경로가 있다면 어떨까? 이 돈 주고 지루하게 가느니 더 싸고 빠른 경로를 택하지 않을까? 다른 경우는 몰라도 이런 경우는 확실하게 최적화를 할 수 있을 것 같다.
+
+현재 상태에 대한 DP값을 갱신할 때 지금 비용보다 높은 비용을 가지는 경로들의 DP값에 대해 현재 상태의 값으로 갱신한다. 비싸지만 빠른 경로를 만나면 멈추면 된다. 그 앞의 값들은 이미 더 빠른 값으로 갱신되어 있을 것이다.
+
+현재 비용보다 싸고 빠른 경로를 찾아서 그 값을 갱신할 수도 있지만, 이 방식은 아예 그 경로를 탐색하는 것을 예방한다.
+
+총 비용이 M보다 작은 경로들에 대해
+```go
+for k := S.m+E.c; dp[E.v][k] > S.d+E.d; k++ {
+    dp[E.v][k]=S.d+E.d
+}
+```
+
+제대로 풀었는데도 TLE를 받는다. 원인은 비효율적인 경로를 먼저 탐색하게 되면 위의 최적화 때문에 계산량이 많아지기 때문이었다.
+노드당 평균 100개의 경로가 있다. 이를 시간순으로 정렬해야 한다.
+
+답 $min(DP[N][M])$
+
+초기화 `dp=inf dp[1][0]=0 queue=[State{1,0,0}]`
 
 go로는 우선순위큐를 구현하기 귀찮고 굳이 그럴 필요까지는 없어서 최적화를 했다.
 
-노드당 평균적으로 100개의 경로가 있어서 우선순위 큐로는 비효율적인 계산을 피할 수 없다. 이를 시간순으로 정렬해야 한다.
+배운점
+
+노드당 엣지 개수가 100개 정도가 있는데 이것을 정렬할 생각을 못 했다. 입력값에 대한 분석을 하는 것이 큰 도움이 되는 것 같다.
+
+## 코드
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"math"
+	"os"
+	"slices"
+)
+
+var std = bufio.NewReadWriter(bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout))
+
+type Ticket struct {
+	u, v, c, d int
+}
+
+type State struct {
+	n, m, d int
+}
+
+func main() {
+	defer std.Flush()
+
+	var t int
+	fmt.Fscan(std, &t)
+
+	for i := 0; i < t; i++ {
+		var n, m, k int
+		fmt.Fscan(std, &n, &m, &k)
+		tickets := map[int][]Ticket{}
+		for i := 0; i < k; i++ {
+			temp := Ticket{}
+			fmt.Fscan(std, &temp.u, &temp.v, &temp.c, &temp.d)
+			tickets[temp.u] = append(tickets[temp.u], temp)
+		}
+		for _, s := range tickets {
+			slices.SortFunc(s, func(a, b Ticket) int { return a.d - b.d })
+		}
+
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, m+1)
+			for j := range dp[i] {
+				dp[i][j] = math.MaxInt
+			}
+		}
+		dp[1][0] = 0
+		queue := []State{{1, 0, 0}}
+
+		for len(queue) > 0 {
+			cur := queue[0]
+			queue = queue[1:]
+
+			if cur.n == n || cur.d > dp[n][m] {
+				continue
+			}
+
+			for _, ticket := range tickets[cur.n] {
+				newTime := cur.d + ticket.d
+				newCost := cur.m + ticket.c
+
+				if newCost <= m {
+					for i := newCost; dp[ticket.v][i] > newTime; i++ {
+						dp[ticket.v][i] = newTime
+					}
+
+					queue = append(queue, State{ticket.v, newCost, newTime})
+				}
+			}
+		}
+
+		res := dp[n][m]
+		if res == math.MaxInt {
+			fmt.Fprint(std, "Poor KCM")
+		} else {
+			fmt.Fprint(std, res)
+		}
+	}
+}
+
+```

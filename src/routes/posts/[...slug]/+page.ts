@@ -1,16 +1,21 @@
+import { getPostBySlug } from '$lib';
+
 // A glob import reads all markdown files from the content directory.
-const allMarkdownFiles = import.meta.glob('../../../contents/*.md');
+const allMarkdownFiles = import.meta.glob('../../../posts/*.md');
 
 export async function entries() {
     const entries = Object.keys(allMarkdownFiles).map((path) => {
-        const slug = path.replace('../../../contents/', '').replace('.md', '');
+        const slug = path.replace('../../../posts/', '').replace('.md', '');
         return { slug };
     });
     return entries;
 }
 
-export async function load({ params }) {
-    const post = await import(`../../../contents/${params.slug}.md`);
+export async function load({ fetch, params }) {
+    getPostBySlug("baek10217")
+    const post = await import(`../../../posts/${params.slug}.md`);
+
+    // console.log(post)
 
     return {
         Content: post.default,

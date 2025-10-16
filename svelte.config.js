@@ -11,9 +11,6 @@ const config = {
 			precompress: false,
 			strict: true
 		}),
-		alias:{
-			
-		}
 	},
 	preprocess: [mdsvex({
 		extensions: ['.md']

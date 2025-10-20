@@ -25,9 +25,9 @@
 			<span class="text-blue-500">&lt;</span>DevLog<span class="text-blue-500">/&gt;</span>
 		</h1>
 		<nav class="flex gap-6 text-lg">
-			<a href="/" class="transition hover:text-blue-500">Home</a>
+			<!-- <a href="/" class="transition hover:text-blue-500">Home</a>
 			<a href="/tags" class="transition hover:text-blue-500">Tags</a>
-			<a href="/about" class="transition hover:text-blue-500">About</a>
+			<a href="/about" class="transition hover:text-blue-500">About</a> -->
 			<!-- <button on:click={toggleTheme} class="ml-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
         {#if dark}
           <Sun size="20" />
@@ -44,7 +44,7 @@
 			<h2 class="mb-10 text-center text-4xl font-bold">Latest Posts</h2>
 			<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{#each Array(6) as _, i}
-					<a
+					<!-- <a
 						href={`/blog/post-${i}`}
 						class="block rounded-2xl border border-transparent bg-white p-6 shadow transition hover:border-blue-500 hover:shadow-xl dark:bg-gray-800"
 					>
@@ -53,7 +53,7 @@
 							This is a short summary of the post, giving a preview of its content.
 						</p>
 						<span class="text-sm font-semibold text-blue-500">Read more →</span>
-					</a>
+					</a> -->
 				{/each}
 			</div>
 		</div>

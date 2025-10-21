@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>{metadata.title}</title>
+	<title>{metadata.title} | Space_Minesweeper's blog</title>
 </svelte:head>
 
 <!-- Get the latest one from: https://katex.org/docs/browser -->

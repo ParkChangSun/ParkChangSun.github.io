@@ -16,7 +16,7 @@ export async function getPostBySlug(slug: string) {
     const filePath = path.join(postsDir, `${slug}.md`);
     const file = readFileSync(filePath, 'utf-8')
 
-    const markdown = await unified()
+    const processedMd = await unified()
         .use(remarkParse)
         .use(remarkMath)
         .use(remarkRehype)
@@ -24,7 +24,7 @@ export async function getPostBySlug(slug: string) {
         .use(rehypeStringify)
         .process(file)
 
-    const metadata = await unified()
+    const processedMeta = await unified()
         .use(remarkParse)
         .use(remarkStringify)
         .use(remarkFrontmatter)
@@ -37,8 +37,8 @@ export async function getPostBySlug(slug: string) {
 
 
     return {
-        metadata: metadata.data.matter as Record<string, string>,
-        markdown: markdown.toString()
+        metadata: processedMeta.data.matter as Record<string, string>,
+        markdown: processedMd.toString()
     };
 }
 
@@ -46,4 +46,26 @@ export function getAllSlugs() {
     return readdirSync(postsDir)
         .filter((file) => file.endsWith('.md'))
         .map((file) => file.replace(/\.md$/, ''));
+}
+
+export async function getNewestPosts() {
+    const fileNames = readdirSync(postsDir)
+        .filter((file) => file.endsWith('.md'))
+    const files = await Promise.all(fileNames.map(async (fileName) => {
+        const filePath = path.join(postsDir, fileName)
+        const file = readFileSync(filePath, 'utf-8')
+        const processedMeta = await unified()
+            .use(remarkParse)
+            .use(remarkStringify)
+            .use(remarkFrontmatter)
+            .use(function () {
+                return function (tree, file) {
+                    matter(file)
+                }
+            })
+            .process(file)
+        const slug = fileName.replace(/\.md$/, '')
+        return { slug, metadata: processedMeta.data.matter as Record<string, string> }
+    }))
+    return files.sort((a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()).slice(0, 3)
 }

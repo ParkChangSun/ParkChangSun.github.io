@@ -38,6 +38,7 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
+		"@lucide/svelte": "^0.546.0",
 		"marked": "^16.3.0",
 		"rehype-katex": "^7.0.1",
 		"rehype-stringify": "^10.0.1",

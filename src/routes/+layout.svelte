@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.png';
+	import DarkToggle from '$lib/components/DarkToggle.svelte';
 
 	const { data, children } = $props();
 	const { posts } = data;
@@ -25,6 +26,7 @@
           <Moon size="20" />
         {/if}
       </button> -->
+			<DarkToggle />
 			<a href="/" class="transition hover:text-blue-500">Dummy</a>
 		</nav>
 	</header>
@@ -39,8 +41,7 @@
 	>
 		<p>© {new Date().getFullYear()} DevLog. All rights reserved.</p>
 		<div class="mt-3 flex gap-4 sm:mt-0">
-			<!-- <a href="https://github.com" target="_blank" class="hover:text-blue-500"><Github size="18" /></a>
-      <a href="https://twitter.com" target="_blank" class="hover:text-blue-500"><Twitter size="18" /></a> -->
+			<!-- <a href="https://github.com" target="_blank" class="hover:text-blue-500"><Github size="18" /></a> -->
 		</div>
 	</footer>
 </div>

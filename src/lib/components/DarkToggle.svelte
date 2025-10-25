@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MonitorSmartphone, Moon, Sun } from '@lucide/svelte';
+	import { Moon, Sun } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	let dark = $state(false);
@@ -18,7 +18,10 @@
 	}
 </script>
 
-<button onclick={toggle}>
+<button
+	onclick={toggle}
+	class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-xl hover:bg-gray-400"
+>
 	{#if dark}
 		<Moon />
 	{:else}

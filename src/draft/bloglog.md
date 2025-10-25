@@ -15,10 +15,6 @@ date: 2025-10-17
 
 mdsvex를 통해 svelte에서도 쉽게 마크다운을 띄울 수 있었다.
 
-post폴더에다가 마크다운 파일들을 몰아넣고 +page.server.js에서 entries를 사용해 마크다운 파일명을 slug로 하는 dynamic route를 prerender하고, load를 사용해 마크다운 파일을 import할 수 있다.
-
-여기에코드
-
 mdsvex는 마크다운 파일을 preprocess해서 svelte component처럼 import, render할 수 있게 한다.
 
 얘는 한 가지 문제가 있었다. 알고리즘 풀이를 적을 때 latex를 사용해 수식을 적을 때가 있는데, 이건 이 기능이 없었다.
@@ -34,18 +30,13 @@ unified는 마크다운과 html을 ast로 처리한다. 처리 과정은 사용�
 remark는 마크다운, rehype은 html이다.
 
 ```
-| ........................ process ........................... |
-| .......... parse ... | ... run ... | ... stringify ..........|
-
           +--------+                     +----------+
 Input ->- | Parser | ->- Syntax Tree ->- | Compiler | ->- Output
-          +--------+          |          +----------+
-                              X
-                              |
-                       +--------------+
-                       | Transformers |
-                       +--------------+
+          +--------+                     +----------+
 ```
+
+여기서 파서는 마크다운 파서, 컴파일러는 html 컴파일러다.
+
 그냥 설명 쓰는게 낫나
 내가 쓴 코드 쓴다음에 리드미에 있는 설명 쓰는게 나은듯?
 
@@ -57,6 +48,27 @@ latex 변환
 
 이제 latex 파트로 돌아가보자. unified는 여러 플러그인들을 제공한다. 여기서 사용할 플러그인은 remark-math rehype-katex 
 
+post폴더에다가 마크다운 파일들을 몰아넣고 +page.server.js에서 entries를 사용해 마크다운 파일명을 slug로 하는 dynamic route를 prerender하고, load를 사용해 마크다운 파일을 import할 수 있다.
+
+여기에코드
+```ts
+// $lib/index.ts
+export function getAllSlugs() {
+    return readdirSync(postsDir)
+        .filter((file) => file.endsWith('.md'))
+        .map((file) => file.replace(/\.md$/, ''));
+}
+
+// routes/+page.server.ts
+export async function entries() {
+    return getAllSlugs().map(slug => ({ slug }))
+}
+```
+
+블로그 개발을 하면서 그걸로 글을 쓰면 무한동력 아님?
+
 # 2025-10-
 
-typograhpy
+1022 최근글모음
+1023typograhpy
+1024토글

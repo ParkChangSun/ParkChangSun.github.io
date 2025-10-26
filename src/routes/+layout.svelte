@@ -3,10 +3,10 @@
 	import favicon from '$lib/assets/favicon.png';
 	import DarkToggle from '$lib/components/DarkToggle.svelte';
 	import { SiGithub } from '@icons-pack/svelte-simple-icons';
+	import PostTreeView from '$lib/components/PostTreeView.svelte';
 
 	const { data, children } = $props();
-	const { posts } = data;
-	console.log(posts);
+	const { postTree } = data;
 </script>
 
 <svelte:head>
@@ -26,9 +26,12 @@
 		</nav>
 	</header>
 
-	<main class="mx-auto w-full max-w-5xl flex-grow px-8 py-12">
-		{@render children?.()}
-	</main>
+	<div class="flex">
+		<PostTreeView nodes={postTree} />
+		<main class="mx-auto w-full max-w-5xl flex-grow px-8 py-12">
+			{@render children?.()}
+		</main>
+	</div>
 
 	<footer
 		class="flex flex-col items-center justify-between border-t border-gray-200 px-8 py-6 text-sm text-gray-500 sm:flex-row dark:border-gray-700 dark:text-gray-400"

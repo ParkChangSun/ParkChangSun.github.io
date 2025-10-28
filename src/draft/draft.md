@@ -1,6 +1,12 @@
 ---
 title: 
-date: 
+post_date: 
+edit_date: 
+description: 
 ---
 
 # 
+
+sv plugins edgeless graph making remarklint?
+
+재밋게쓰긴해야해

@@ -1,6 +1,7 @@
 import { getAllSlugs, getPostBySlug } from '$lib';
+import type { EntryGenerator } from './$types.js';
 
-export async function entries() {
+export const entries: EntryGenerator = () => {
     return getAllSlugs().map(slug => ({ slug }))
 }
 

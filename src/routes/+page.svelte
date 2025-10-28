@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	const { data } = $props();
 	const { latestPosts } = data;
 </script>
@@ -26,5 +28,3 @@
 		{/each}
 	</div>
 </div>
-
-sv plugins edgeless graph making 다익 문제 풀때 힙써보고 또 메모리초과나는지 보기 remarklint?

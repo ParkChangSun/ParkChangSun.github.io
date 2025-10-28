@@ -20,6 +20,7 @@
 		"@sveltejs/adapter-static": "^3.0.9",
 		"@sveltejs/kit": "^2.22.0",
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
+		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/node": "^22",
 		"eslint": "^9.22.0",
@@ -37,6 +38,8 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
+		"@icons-pack/svelte-simple-icons": "^6.5.0",
+		"@lucide/svelte": "^0.546.0",
 		"marked": "^16.3.0",
 		"rehype-katex": "^7.0.1",
 		"rehype-stringify": "^10.0.1",

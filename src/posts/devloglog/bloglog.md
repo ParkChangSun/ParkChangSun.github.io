@@ -72,3 +72,4 @@ export async function entries() {
 1022 최근글모음
 1023typograhpy
 1024토글
+1027 slug navigation

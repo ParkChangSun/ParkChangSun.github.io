@@ -36,12 +36,6 @@ export async function getPostBySlug(slug: string) {
     };
 }
 
-export function getAllSlugs() {
-    return readdirSync(postsDir)
-        .filter((file) => file.endsWith('.md'))
-        .map((file) => file.replace(/\.md$/, ''));
-}
-
 export async function getNewestPosts() {
     const fileNames = readdirSync(postsDir)
         .filter((file) => file.endsWith('.md'))
@@ -68,29 +62,45 @@ export interface PostTreeNode {
     name: string
     type: "directory" | "file"
     children?: PostTreeNode[]
+    route?: string
 }
 
-export function getAllPosts() {
-    return _getAllPosts(postsDir)
-}
-
-function _getAllPosts(dir: string): PostTreeNode {
+export function getAllPosts(dir = postsDir, route = '/posts'): PostTreeNode {
     const entries = readdirSync(dir, { withFileTypes: true })
 
     const children: PostTreeNode[] = entries.map((entry) => {
         const entryPath = path.join(dir, entry.name)
 
         if (entry.isDirectory()) {
-            return _getAllPosts(entryPath)
+            return getAllPosts(entryPath, path.join(route, entry.name))
         }
 
         if (entry.isFile() && entry.name.endsWith(".md")) {
-            return { name: entry.name, type: "file" }
+            const slug = entry.name.replace(/\.md$/, '')
+            return { name: slug, type: "file", route: path.join(route, slug) }
         }
 
         return null
     }).filter((child): child is PostTreeNode => child !== null)
 
     return { name: path.basename(dir), type: "directory", children }
+}
+
+export function getAllSlugs(dir = postsDir, route = ''): string[] {
+    const entries = readdirSync(dir, { withFileTypes: true });
+    const slugs: string[] = [];
+
+    for (const entry of entries) {
+        const entryPath = path.join(dir, entry.name);
+        const rawSlug = path.join(route, entry.name)
+
+        if (entry.isDirectory()) {
+            slugs.push(...getAllSlugs(entryPath, rawSlug));
+        } else if (entry.name.endsWith('.md')) {
+            slugs.push(rawSlug.replace(/\.md$/, ''))
+        }
+    }
+
+    return slugs;
 }
 

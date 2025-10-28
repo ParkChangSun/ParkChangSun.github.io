@@ -1,6 +1,6 @@
 <script lang="ts">
 	const { data } = $props();
-	const { markdown, metadata } = data;
+	let { markdown, metadata } = $derived(data);
 </script>
 
 <svelte:head>

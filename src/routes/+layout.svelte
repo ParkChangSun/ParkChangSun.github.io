@@ -27,7 +27,9 @@
 	</header>
 
 	<div class="flex">
-		<PostTreeView nodes={postTree} />
+		<nav>
+			<PostTreeView tree={postTree} />
+		</nav>
 		<main class="mx-auto w-full max-w-5xl flex-grow px-8 py-12">
 			{@render children?.()}
 		</main>

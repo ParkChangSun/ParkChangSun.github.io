@@ -1,35 +1,40 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import type { PostTreeNode } from '$lib';
 	import PostTreeView from './PostTreeView.svelte';
-	// let open = new Set<string>();
 
-	// function toggle(path: string) {
-	//   open.has(path) ? open.delete(path) : open.add(path);
-	// }
+	const { tree }: { tree: PostTreeNode } = $props();
 
-	const { nodes } = $props();
+	let open = $state(page.url.pathname.includes(`/${tree.name}`));
 </script>
 
-<ul class="space-y-1">
-	{#each nodes as node}
-		{#if node.type === 'folder'}
-			<li>
-				<button class="flex items-center gap-1 font-semibold text-gray-700 dark:text-gray-200">
-					<!-- {open.has(node.path) ? '📂' : '📁'}  -->
-					{node.name}
-				</button>
-
-				<!-- {#if open.has(node.path)}
-          <div class="pl-4 border-l border-gray-300 dark:border-gray-700 mt-1">
-            <PostTreeView nodes={node.children} />
-          </div>
-        {/if} -->
-			</li>
-		{:else}
-			<li>
-				<a href={'/'} class="block text-gray-600 hover:text-blue-500 dark:text-gray-400">
-					📄 {node.name}
-				</a>
-			</li>
-		{/if}
-	{/each}
+<ul class="ml-5">
+	<li>
+		<button class="hover:cursor-pointer" onclick={() => (open = !open)}>
+			{#if open}
+				📂
+			{:else}
+				📁
+			{/if}
+			{tree.name}
+		</button>
+	</li>
+	{#if open}
+		{#each tree.children as child}
+			{#if child.type === 'directory'}
+				<PostTreeView tree={child} />
+			{:else}
+				<li class="ml-5">
+					<a href={child.route}>
+						{#if page.url.pathname === child.route}
+							📜
+						{:else}
+							📄
+						{/if}
+						{child.name}
+					</a>
+				</li>
+			{/if}
+		{/each}
+	{/if}
 </ul>

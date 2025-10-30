@@ -42,12 +42,14 @@
 		"@lucide/svelte": "^0.546.0",
 		"marked": "^16.3.0",
 		"rehype-katex": "^7.0.1",
+		"rehype-pretty-code": "^0.14.1",
 		"rehype-stringify": "^10.0.1",
 		"remark-frontmatter": "^5.0.0",
 		"remark-math": "^6.0.0",
 		"remark-parse": "^11.0.0",
 		"remark-rehype": "^11.1.2",
 		"remark-stringify": "^11.0.0",
+		"shiki": "^3.14.0",
 		"unified": "^11.0.5",
 		"vfile-matter": "^5.0.1"
 	}

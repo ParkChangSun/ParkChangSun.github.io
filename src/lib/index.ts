@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "fs";
 import path from "path";
 import rehypeKatex from "rehype-katex";
+import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMath from "remark-math";
@@ -27,6 +28,9 @@ export async function getPostBySlug(slug: string) {
         .use(remarkMath)
         .use(remarkRehype)
         .use(rehypeKatex)
+        .use(rehypePrettyCode, {
+            theme: "dark-plus"
+        })
         .use(rehypeStringify)
         .process(file)
 
@@ -65,14 +69,14 @@ export interface PostTreeNode {
     route?: string
 }
 
-export function getAllPosts(dir = postsDir, route = '/posts'): PostTreeNode {
+export function getAllPostsTree(dir = postsDir, route = '/posts'): PostTreeNode {
     const entries = readdirSync(dir, { withFileTypes: true })
 
     const children: PostTreeNode[] = entries.map((entry) => {
         const entryPath = path.join(dir, entry.name)
 
         if (entry.isDirectory()) {
-            return getAllPosts(entryPath, path.join(route, entry.name))
+            return getAllPostsTree(entryPath, path.join(route, entry.name))
         }
 
         if (entry.isFile() && entry.name.endsWith(".md")) {

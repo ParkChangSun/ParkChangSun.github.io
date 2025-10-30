@@ -65,11 +65,18 @@ export async function entries() {
 }
 ```
 
+깃헙액션
+
 블로그 개발을 하면서 그걸로 글을 쓰면 무한동력 아님?
 
 # 2025-10-
 
 1022 최근글모음
 1023typograhpy
-1024토글
+1024토글 테일윈드버전 
 1027 slug navigation
+코드 하이라이트 rehype pretty code shiki css @apply e다른rehype라이브러리들안쓴이유
+테일윈드로하려했는데typo는span을지원하지않음 svelte css 적용방식 고유hash값부여 @apply는 postcss라서 :global구문 이해불가
+Tailwind는 “전역 스타일링을 위한 비표준 스코프 문법” 내부에서 작동하지 않는다.
+p를 넣어봤을때
+일단 여기까지만 하고 나중에 하자

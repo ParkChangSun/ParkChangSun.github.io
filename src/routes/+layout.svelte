@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.png';
+
 	import DarkToggle from '$lib/components/DarkToggle.svelte';
 	import { SiGithub } from '@icons-pack/svelte-simple-icons';
 	import PostTreeView from '$lib/components/PostTreeView.svelte';
@@ -21,13 +22,13 @@
 	>
 		<a href="/"><h1 class="text-3xl">🌌💣🧹</h1></a>
 		<nav class="flex gap-6 text-lg">
+			<a href="/posts" class="transition hover:text-blue-500">Blog</a>
 			<DarkToggle />
-			<a href="/" class="transition hover:text-blue-500">Dummy</a>
 		</nav>
 	</header>
 
 	<div class="flex">
-		<nav>
+		<nav class="mt-5 border-r border-gray-700 pr-5">
 			<PostTreeView tree={postTree} />
 		</nav>
 		<main class="mx-auto w-full max-w-5xl flex-grow px-8 py-12">

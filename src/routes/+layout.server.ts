@@ -1,7 +1,7 @@
-import { getAllPosts, getAllSlugs } from "$lib";
+import { getAllPostsTree, getAllSlugs } from "$lib";
 
 export const load = () => {
-    return { postTree: getAllPosts() }
+    return { postTree: getAllPostsTree() }
 };
 
 export const prerender = true;

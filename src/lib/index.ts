@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from "fs";
+import { toc } from "mdast-util-toc";
 import path from "path";
 import rehypeKatex from "rehype-katex";
 import rehypePrettyCode from "rehype-pretty-code";
@@ -10,6 +11,17 @@ import remarkRehype from "remark-rehype";
 import remarkStringify from "remark-stringify";
 import { unified } from "unified";
 import { matter } from "vfile-matter";
+
+import type { Root } from 'mdast'
+import { toHtml } from "hast-util-to-html";
+import { toHast } from "mdast-util-to-hast";
+import rehypeSlug from "rehype-slug";
+import remarkToc from "remark-toc";
+import { visit } from "unist-util-visit";
+import { heading } from "hast-util-heading";
+
+import GithubSlugger from 'github-slugger'
+import { headingRank } from "hast-util-heading-rank";
 
 const postsDir = path.resolve('src/posts');
 
@@ -27,6 +39,25 @@ export async function getPostBySlug(slug: string) {
         })
         .use(remarkMath)
         .use(remarkRehype)
+        .use(function () {
+            return function (tree, file) {
+                const s = new GithubSlugger()
+                interface TocItem {
+                    depth: number
+                    slug: string
+                    value: string
+                }
+                let a: TocItem[] = []
+                visit(tree, (node) => {
+                    if (heading(node) && node.children?.[0].type === "text") {
+                        const value = node.children[0].value
+                        a.push({ depth: headingRank(node)!, slug: s.slug(value), value })
+                    }
+                })
+                file.data.toc = a
+            }
+        })
+        .use(rehypeSlug)
         .use(rehypeKatex)
         .use(rehypePrettyCode, {
             theme: "dark-plus"
@@ -34,6 +65,7 @@ export async function getPostBySlug(slug: string) {
         .use(rehypeStringify)
         .process(file)
 
+    console.log(processed.data.toc)
     return {
         metadata: processed.data.matter as Record<string, string>,
         markdown: processed.toString()
@@ -48,13 +80,13 @@ export async function getNewestPosts() {
         const file = readFileSync(filePath, 'utf-8')
         const processed = await unified()
             .use(remarkParse)
-            .use(remarkStringify)
             .use(remarkFrontmatter)
             .use(function () {
                 return function (tree, file) {
                     matter(file)
                 }
             })
+            .use(remarkStringify)
             .process(file)
         const slug = fileName.replace(/\.md$/, '')
         return { slug, metadata: processed.data.matter as Record<string, string> }

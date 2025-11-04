@@ -1,6 +1,8 @@
 <script lang="ts">
 	const { data } = $props();
-	let { markdown, metadata } = $derived(data);
+	let { markdown, toc, metadata } = $derived(data);
+
+	const depth = ['', '', 'ml-2'];
 </script>
 
 <svelte:head>
@@ -12,7 +14,15 @@
 <!-- Get the latest one from: https://katex.org/docs/browser -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
 
-<div class="prose max-w-none dark:prose-invert">
+<ol class="sticky top-10 w-50 self-start rounded-xl border border-gray-400 p-3">
+	{#each toc as c}
+		<li class={depth[c.depth]}>
+			<a class="transition hover:text-blue-500" href={`#${c.slug}`}>{c.value}</a>
+		</li>
+	{/each}
+</ol>
+
+<div class="prose max-w-none dark:prose-invert prose-a:no-underline">
 	{@html markdown}
 </div>
 

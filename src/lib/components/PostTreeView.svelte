@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { PostTreeNode } from '$lib';
+	import type { PostDirTreeNode } from '$lib';
 	import PostTreeView from './PostTreeView.svelte';
 
-	const { tree }: { tree: PostTreeNode } = $props();
+	const { dir }: { dir: PostDirTreeNode } = $props();
 
-	let open = $state(page.url.pathname.includes(`/${tree.name}`));
+	let open = $state(page.url.pathname.includes(`/${dir.name}`));
 </script>
 
 <ul class="ml-5">
@@ -16,25 +16,25 @@
 			{:else}
 				📁
 			{/if}
-			{tree.name}
+			{dir.name}
 		</button>
 	</li>
 	{#if open}
-		{#each tree.children as child}
-			{#if child.type === 'directory'}
-				<PostTreeView tree={child} />
-			{:else}
-				<li class="ml-5">
-					<a href={child.route}>
-						{#if page.url.pathname === child.route}
-							📜
-						{:else}
-							📄
-						{/if}
-						{child.name}
-					</a>
-				</li>
-			{/if}
+		{#each dir.children as c}
+			<PostTreeView dir={c} />
+		{/each}
+
+		{#each dir.posts as p}
+			<li class="ml-5">
+				<a href={`/posts/${p.slug}`}>
+					{#if page.url.pathname === `/posts/${p.slug}`}
+						📜
+					{:else}
+						📄
+					{/if}
+					{p.metadata.title}
+				</a>
+			</li>
 		{/each}
 	{/if}
 </ul>

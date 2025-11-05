@@ -70,71 +70,69 @@ export async function getPostBySlug(slug: string) {
     };
 }
 
-export async function getNewestPosts() {
-    const fileNames = readdirSync(postsDir)
-        .filter((file) => file.endsWith('.md'))
-    const files = await Promise.all(fileNames.map(async (fileName) => {
-        const filePath = path.join(postsDir, fileName)
-        const file = readFileSync(filePath, 'utf-8')
-        const processed = await unified()
-            .use(remarkParse)
-            .use(remarkFrontmatter)
-            .use(function () {
-                return function (tree, file) {
-                    matter(file)
-                }
-            })
-            .use(remarkStringify)
-            .process(file)
-        const slug = fileName.replace(/\.md$/, '')
-        return { slug, metadata: processed.data.matter as Record<string, string> }
-    }))
-    return files.sort((a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()).slice(0, 3)
+export interface PostListItem {
+    slug: string
+    metadata: Record<string, string>
 }
 
-export interface PostTreeNode {
+export interface PostDirTreeNode {
     name: string
-    type: "directory" | "file"
-    children?: PostTreeNode[]
-    route?: string
+    children: PostDirTreeNode[]
+    posts: PostListItem[]
 }
 
-export function getAllPostsTree(dir = postsDir, route = '/posts'): PostTreeNode {
+export function getAllPostsList(dir = postsDir) {
+    const posts: PostListItem[] = []
+
+    const entries = readdirSync(dir, { withFileTypes: true });
+    entries.forEach(entry => {
+        const itemPath = path.join(dir, entry.name);
+
+        if (entry.isDirectory()) {
+            posts.push(...getAllPostsList(itemPath))
+            return
+        }
+
+        if (entry.isFile()) {
+            posts.push({ slug: path.relative(postsDir, itemPath).replace(/\.md$/, ''), metadata: getFrontmatter(itemPath) })
+        }
+    })
+
+    return posts
+}
+
+export function getAllPostsTree(dir = postsDir): PostDirTreeNode {
+    const children: PostDirTreeNode[] = []
+    const posts: PostListItem[] = []
+
     const entries = readdirSync(dir, { withFileTypes: true })
 
-    const children: PostTreeNode[] = entries.map((entry) => {
+    entries.forEach(entry => {
         const entryPath = path.join(dir, entry.name)
-
         if (entry.isDirectory()) {
-            return getAllPostsTree(entryPath, path.join(route, entry.name))
+            children.push(getAllPostsTree(entryPath))
         }
 
-        if (entry.isFile() && entry.name.endsWith(".md")) {
-            const slug = entry.name.replace(/\.md$/, '')
-            return { name: slug, type: "file", route: path.join(route, slug) }
+        if (entry.isFile()) {
+            posts.push({ slug: path.relative(postsDir, entryPath).replace(/\.md$/, ''), metadata: getFrontmatter(entryPath) })
         }
+    })
 
-        return null
-    }).filter((child): child is PostTreeNode => child !== null)
-
-    return { name: path.basename(dir), type: "directory", children }
+    return { name: path.basename(dir), children, posts }
 }
 
-export function getAllSlugs(dir = postsDir, route = ''): string[] {
-    const entries = readdirSync(dir, { withFileTypes: true });
-    const slugs: string[] = [];
-
-    for (const entry of entries) {
-        const entryPath = path.join(dir, entry.name);
-        const rawSlug = path.join(route, entry.name)
-
-        if (entry.isDirectory()) {
-            slugs.push(...getAllSlugs(entryPath, rawSlug));
-        } else if (entry.name.endsWith('.md')) {
-            slugs.push(rawSlug.replace(/\.md$/, ''))
-        }
-    }
-
-    return slugs;
+function getFrontmatter(p: string) {
+    const raw = readFileSync(p, "utf-8");
+    const processed = unified()
+        .use(remarkParse)
+        .use(remarkFrontmatter)
+        .use(function () {
+            return function (tree, file) {
+                matter(file)
+            }
+        })
+        .use(remarkStringify)
+        .processSync(raw)
+    return processed.data.matter as Record<string, string>
 }
 

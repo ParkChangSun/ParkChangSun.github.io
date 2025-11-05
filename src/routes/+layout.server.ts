@@ -1,4 +1,4 @@
-import { getAllPostsTree, getAllSlugs } from "$lib";
+import { getAllPostsTree } from "$lib";
 
 export const load = () => {
     return { postTree: getAllPostsTree() }

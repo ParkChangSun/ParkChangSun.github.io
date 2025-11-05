@@ -22,6 +22,9 @@
 	{/each}
 </ol>
 
+<h1>{metadata.title}</h1>
+<h1>{metadata.post_date}</h1>
+
 <div class="prose max-w-none dark:prose-invert prose-a:no-underline">
 	{@html markdown}
 </div>

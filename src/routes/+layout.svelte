@@ -29,7 +29,7 @@
 
 	<div class="flex">
 		<nav class="mt-5 border-r border-gray-700 pr-5">
-			<PostTreeView tree={postTree} />
+			<PostTreeView dir={postTree} />
 		</nav>
 		<main class="mx-auto flex w-full max-w-5xl flex-grow px-8 py-12">
 			{@render children?.()}

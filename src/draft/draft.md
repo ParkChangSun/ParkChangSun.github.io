@@ -3,6 +3,7 @@ title:
 post_date: 
 edit_date: 
 description: 
+tags: 
 ---
 
 # 

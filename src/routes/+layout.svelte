@@ -3,11 +3,8 @@
 	import favicon from '$lib/assets/favicon.png';
 
 	import DarkToggle from '$lib/components/DarkToggle.svelte';
-	import { SiGithub } from '@icons-pack/svelte-simple-icons';
-	import PostTreeView from '$lib/components/PostTreeView.svelte';
 
-	const { data, children } = $props();
-	const { postTree } = data;
+	const { children } = $props();
 </script>
 
 <svelte:head>
@@ -27,23 +24,14 @@
 		</nav>
 	</header>
 
-	<div class="flex">
-		<nav class="mt-5 border-r border-gray-700 pr-5">
-			<PostTreeView dir={postTree} />
-		</nav>
-		<main class="mx-auto flex w-full max-w-5xl flex-grow px-8 py-12">
-			{@render children?.()}
-		</main>
+	<div class="flex grow">
+		{@render children?.()}
 	</div>
 
 	<footer
 		class="flex flex-col items-center justify-between border-t border-gray-200 px-8 py-6 text-sm text-gray-500 sm:flex-row dark:border-gray-700 dark:text-gray-400"
 	>
 		<p>© {new Date().getFullYear()} Space_Minesweeper. All rights reserved.</p>
-		<div class="mt-3 flex gap-4 sm:mt-0">
-			<a href="https://github.com/ParkChangSun/ParkChangSun.github.io">
-				<SiGithub title="" />
-			</a>
-		</div>
+		<a href="https://github.com/ParkChangSun/ParkChangSun.github.io"> Github</a>
 	</footer>
 </div>

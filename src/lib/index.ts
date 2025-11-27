@@ -54,6 +54,7 @@ export async function getPostBySlug(slug: string) {
         })
         .use(rehypeSlug)
         .use(rehypeAutolinkHeadings, {
+            behavior: 'append',
             content: { type: 'text', value: '🔗' }
         })
         .use(rehypeKatex)

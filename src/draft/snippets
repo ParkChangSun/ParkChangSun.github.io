@@ -1,0 +1,8 @@
+<a
+				href={`/posts/${p.slug}`}
+				class="block rounded-2xl border border-transparent bg-white p-6 shadow transition hover:border-blue-500 hover:shadow-xl dark:bg-gray-800"
+			>
+				<h3 class="mb-2 text-xl font-semibold">{p.metadata.title}</h3>
+				<p class="mb-3 text-gray-600 dark:text-gray-400">tags</p>
+				<span class="text-sm font-semibold text-blue-500">Read more →</span>
+			</a>

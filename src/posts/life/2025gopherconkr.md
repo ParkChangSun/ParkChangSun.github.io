@@ -2,7 +2,7 @@
 title: GopherCon Korea 2025 후기
 post_date: 2025-11-10
 edit_date: 2025-11-10
-categories: ["Conference", "Go"]
+tags: ["Conference", "Go"]
 ---
 
 # GopherCon Korea 2025 후기

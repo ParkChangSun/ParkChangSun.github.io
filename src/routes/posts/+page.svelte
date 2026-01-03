@@ -6,7 +6,7 @@
 
 <div class="mx-auto flex max-w-3xl flex-col items-center">
 	<h1 class="text-2xl">Space_Minesweeper's Posts</h1>
-	<div>
+	<div class="h-[30vh] w-9/10 border">
 		<PostTreeView dir={data.postTree} />
 	</div>
 

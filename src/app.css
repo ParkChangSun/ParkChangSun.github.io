@@ -2,3 +2,18 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --animate-glitch-after: glitch 3s linear infinite alternate-reverse;
+    --animate-glitch-before: glitch 2s linear infinite alternate-reverse;
+
+    @keyframes glitch {
+        0%,
+        100% {
+            clip-path: inset(20% 0 50% 0);
+        }
+        50% {
+            clip-path: inset(40% 0 20% 0);
+        }
+    }
+}

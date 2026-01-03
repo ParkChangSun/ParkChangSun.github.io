@@ -17,7 +17,7 @@
 	<header
 		class="flex items-center justify-between border-b border-gray-200 px-8 py-6 dark:border-gray-700"
 	>
-		<a href="/"><h1 class="text-3xl">🌌💣🧹</h1></a>
+		<a href="/"><h1 class="text-3xl">🚀💣🧹</h1></a>
 		<nav class="flex gap-6 text-lg">
 			<a href="/posts" class="transition hover:text-blue-500">Blog</a>
 			<DarkToggle />

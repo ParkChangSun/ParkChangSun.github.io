@@ -1,11 +1,15 @@
 <script>
-	import PostTreeView from '$lib/components/PostTreeView.svelte';
+	import { page } from '$app/state';
 
 	const { data } = $props();
 </script>
 
 <div class="mx-auto flex max-w-3xl flex-col items-center">
 	<h1 class="text-2xl">Space_Minesweeper's Posts</h1>
+	{#each data.categories as c}
+		<a href={`${page.url}/${c}`}>{c}</a>
+	{/each}
+	<!-- <h1 class="text-2xl">Space_Minesweeper's Posts</h1>
 	<div class="h-[30vh] w-9/10 border">
 		<PostTreeView dir={data.postTree} />
 	</div>
@@ -21,5 +25,5 @@
 				<p class="mb-3 text-gray-600 dark:text-gray-400">{p.metadata.tags}</p>
 			</a>
 		{/each}
-	</div>
+	</div> -->
 </div>

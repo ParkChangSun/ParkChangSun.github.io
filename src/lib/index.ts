@@ -19,121 +19,98 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 const postsDir = path.resolve('src/posts');
 
-export interface TocItem {
+export interface Toc {
     depth: number
     slug: string
     value: string
 }
 
-export async function getPostBySlug(slug: string) {
-    const filePath = path.join(postsDir, `${slug}.md`);
-    const file = readFileSync(filePath, 'utf-8')
+export interface Metadata {
+    title: string
+    tags: string[]
+    post_date?: string
+    edit_date?: string
+    slug: string
+}
 
-    const processed = await unified()
-        .use(remarkParse)
-        .use(remarkFrontmatter)
-        .use(function () {
-            return function (tree, file) {
-                matter(file)
-            }
-        })
-        .use(remarkMath)
-        .use(remarkRehype)
-        .use(function () {
-            return function (tree, file) {
-                const s = new GithubSlugger()
-                let a: TocItem[] = []
-                visit(tree, (node) => {
-                    if (heading(node) && node.children?.[0].type === "text") {
-                        const value = node.children[0].value
-                        a.push({ depth: headingRank(node)!, slug: s.slug(value), value })
-                    }
-                })
-                file.data.toc = a
-            }
-        })
-        .use(rehypeSlug)
-        .use(rehypeAutolinkHeadings, {
-            behavior: 'append',
-            content: { type: 'text', value: '🔗' }
-        })
-        .use(rehypeKatex)
-        .use(rehypePrettyCode, {
-            theme: "dark-plus"
-        })
-        .use(rehypeStringify)
-        .process(file)
+const markdownTransformer = unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter)
+    .use(function () {
+        return function (tree, file) {
+            matter(file)
+        }
+    })
+    .use(remarkMath)
+    .use(remarkRehype)
+    .use(function () {
+        return function (tree, file) {
+            const s = new GithubSlugger()
+            let a: Toc[] = []
+            visit(tree, (node) => {
+                if (heading(node) && node.children?.[0].type === "text") {
+                    const value = node.children[0].value
+                    a.push({ depth: headingRank(node)!, slug: s.slug(value), value })
+                }
+            })
+            file.data.toc = a
+        }
+    })
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings, {
+        behavior: 'append',
+        content: { type: 'text', value: '🔗' }
+    })
+    .use(rehypeKatex)
+    .use(rehypePrettyCode, {
+        theme: "dark-plus"
+    })
+    .use(rehypeStringify)
+
+const metadataExtractor = unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter)
+    .use(function () {
+        return function (tree, file) {
+            matter(file)
+        }
+    })
+    .use(remarkStringify)
+
+export function getAllCategories() {
+    const res: string[] = []
+    const entries = readdirSync(postsDir, { withFileTypes: true });
+    entries.forEach(entry => {
+        if (entry.isDirectory()) {
+            res.push(entry.name)
+        }
+    })
+    return res
+}
+
+export async function getCategoryPosts(category: string) {
+    const res: Metadata[] = []
+
+    const entries = readdirSync(path.join(postsDir, category))
+    const b = entries.map(async entry => {
+        const raw = readFileSync(path.join(postsDir, category, entry), "utf-8");
+        const processed = await metadataExtractor.process(raw)
+        const a = processed.data.matter as Metadata
+        a.slug = entry
+        res.push(a)
+    })
+    await Promise.all(b)
+
+    return res
+}
+
+export async function parseMarkdown(category: string, post: string) {
+    const raw = readFileSync(path.join(postsDir, category, post), "utf-8");
+    const processed = await markdownTransformer.process(raw)
 
     return {
-        metadata: processed.data.matter as Record<string, string>,
-        toc: processed.data.toc as TocItem[],
-        markdown: processed.toString()
+        metadata: processed.data.matter as Metadata,
+        toc: processed.data.toc as Toc[],
+        content: processed.toString()
     };
 }
-
-export interface PostListItem {
-    slug: string
-    metadata: Record<string, string>
-}
-
-export interface PostDirTreeNode {
-    name: string
-    children: PostDirTreeNode[]
-    posts: PostListItem[]
-}
-
-export function getAllPostsList(dir = postsDir) {
-    const posts: PostListItem[] = []
-
-    const entries = readdirSync(dir, { withFileTypes: true });
-    entries.forEach(entry => {
-        const itemPath = path.join(dir, entry.name);
-
-        if (entry.isDirectory()) {
-            posts.push(...getAllPostsList(itemPath))
-            return
-        }
-
-        if (entry.isFile()) {
-            posts.push({ slug: path.relative(postsDir, itemPath).replace(/\.md$/, ''), metadata: getFrontmatter(itemPath) })
-        }
-    })
-
-    return posts
-}
-
-export function getAllPostsTree(dir = postsDir): PostDirTreeNode {
-    const children: PostDirTreeNode[] = []
-    const posts: PostListItem[] = []
-
-    const entries = readdirSync(dir, { withFileTypes: true })
-
-    entries.forEach(entry => {
-        const entryPath = path.join(dir, entry.name)
-        if (entry.isDirectory()) {
-            children.push(getAllPostsTree(entryPath))
-        }
-
-        if (entry.isFile()) {
-            posts.push({ slug: path.relative(postsDir, entryPath).replace(/\.md$/, ''), metadata: getFrontmatter(entryPath) })
-        }
-    })
-
-    return { name: path.basename(dir), children, posts }
-}
-
-function getFrontmatter(p: string) {
-    const raw = readFileSync(p, "utf-8");
-    const processed = unified()
-        .use(remarkParse)
-        .use(remarkFrontmatter)
-        .use(function () {
-            return function (tree, file) {
-                matter(file)
-            }
-        })
-        .use(remarkStringify)
-        .processSync(raw)
-    return processed.data.matter as Record<string, string>
-}
-

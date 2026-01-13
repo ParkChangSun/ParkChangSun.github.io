@@ -2,7 +2,7 @@
 	import { Calendar, CalendarSync, ChevronsUp, ListTree, Tags, X } from '@lucide/svelte';
 
 	const { data } = $props();
-	let { markdown, toc, metadata } = $derived(data);
+	let { content: markdown, toc, metadata } = $derived(data);
 
 	const depth = ['', '', 'ml-2'];
 

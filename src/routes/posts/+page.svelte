@@ -4,26 +4,17 @@
 	const { data } = $props();
 </script>
 
-<div class="mx-auto flex max-w-3xl flex-col items-center">
-	<h1 class="text-2xl">Space_Minesweeper's Posts</h1>
-	{#each data.categories as c}
-		<a href={`${page.url}/${c}`}>{c}</a>
-	{/each}
-	<!-- <h1 class="text-2xl">Space_Minesweeper's Posts</h1>
-	<div class="h-[30vh] w-9/10 border">
-		<PostTreeView dir={data.postTree} />
-	</div>
-
-	<h2 class="text-xl">Latest</h2>
-	<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-		{#each data.latestPosts as p}
+<div class="mx-auto max-w-5xl px-4 py-12">
+	<h1 class="mb-8 text-3xl font-bold text-gray-900 dark:text-white">Space_Minesweeper's Posts</h1>
+	<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+		{#each data.categories as c}
 			<a
-				href={`/posts/${p.slug}`}
-				class="block rounded-2xl border border-transparent bg-white p-6 shadow transition hover:border-blue-500 hover:shadow-xl dark:bg-gray-800"
+				href={`${page.url}/${c}`}
+				class="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-blue-500 hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
 			>
-				<h3 class="mb-2 text-xl font-semibold">{p.metadata.title}</h3>
-				<p class="mb-3 text-gray-600 dark:text-gray-400">{p.metadata.tags}</p>
+				<h2 class="text-xl font-semibold transition-colors group-hover:text-blue-500">{c}</h2>
+				<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">description</p>
 			</a>
 		{/each}
-	</div> -->
+	</div>
 </div>
